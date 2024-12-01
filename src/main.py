@@ -14,6 +14,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from keras.utils import to_categorical
 import scipy
+from PIL import Image
 import os
 os.chdir("..")
 
@@ -22,7 +23,7 @@ train_face_detection_network = True
 
 class Hyperface:
     def get_data(self, path):
-        self.data = np.load(path)
+        self.data = np.load(path, allow_pickle=True)
         return self.data
 
     def plot_image_data(self, num_image=18):
@@ -48,7 +49,7 @@ class Hyperface:
     # Creating and resizing training data
     def resize_images_to_227_x_227(self, images):
         images = images / 255
-        return np.array([scipy.misc.imresize(im, (227, 227)) for im in images])
+        return np.array([Image.fromarray((im).astype(np.uint8)).resize((227, 227)) for im in images])
 
     def get_data_and_print_shapes(self):
         X_train = self.resize_images_to_227_x_227(self.data[:, 0])
@@ -81,7 +82,7 @@ class Hyperface:
 
 if __name__ == '__main__':
     hyperface = Hyperface()
-    data = hyperface.get_data('data/sample_data.npy')
+    data = hyperface.get_data("absolute path to 'data/sample_data.npy'")
     # hyperface.plot_image_data(num_image=18)
 
     X_train, y_Face, y_Landmarks, y_Visibility, y_Pose, y_Gender = hyperface.get_data_and_print_shapes()
